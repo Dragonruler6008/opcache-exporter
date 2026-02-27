@@ -30,6 +30,7 @@ type InternedStringsUsage struct {
 // OPcacheStatistics contains information about OPcache statistics
 type OPcacheStatistics struct {
 	NumCachedScripts   int64   `json:"num_cached_scripts"`
+	MaxCachedScripts   int64   `json:"max_cached_scripts"`
 	NumCachedKeys      int64   `json:"num_cached_keys"`
 	MaxCachedKeys      int64   `json:"max_cached_keys"`
 	Hits               int64   `json:"hits"`

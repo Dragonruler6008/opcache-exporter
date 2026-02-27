@@ -33,6 +33,7 @@ var (
 	internedStringsUsageUsedNumerOfStrings = newMetric("interned_strings_usage_number_of_strings", "OPcache interned string number of strings.")
 
 	statisticsNumCachedScripts   = newMetric("statistics_num_cached_scripts", "OPcache statistics, number of cached scripts.")
+	statisticsMaxCachedScripts   = newMetric("statistics_max_cached_scripts", "OPcache statistics, max cached scripts.")
 	statisticsNumCachedKeys      = newMetric("statistics_num_cached_keys", "OPcache statistics, number of cached keys.")
 	statisticsMaxCachedKeys      = newMetric("statistics_max_cached_keys", "OPcache statistics, max cached keys.")
 	statisticsHits               = newMetric("statistics_hits", "OPcache statistics, hits.")
@@ -100,6 +101,7 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- internedStringsUsageUsedFreeMemory
 	ch <- internedStringsUsageUsedNumerOfStrings
 	ch <- statisticsNumCachedScripts
+	ch <- statisticsMaxCachedScripts
 	ch <- statisticsNumCachedKeys
 	ch <- statisticsMaxCachedKeys
 	ch <- statisticsHits
@@ -137,6 +139,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageUsedMemoryDesc, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.UsedMemory))
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageUsedFreeMemory, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.FreeMemory))
 	ch <- prometheus.MustNewConstMetric(statisticsNumCachedScripts, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.NumCachedScripts))
+	ch <- prometheus.MustNewConstMetric(statisticsMaxCachedScripts, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.MaxCachedScripts))
 	ch <- prometheus.MustNewConstMetric(statisticsNumCachedKeys, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.NumCachedKeys))
 	ch <- prometheus.MustNewConstMetric(statisticsMaxCachedKeys, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.MaxCachedKeys))
 	ch <- prometheus.MustNewConstMetric(statisticsHits, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.Hits))
