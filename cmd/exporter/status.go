@@ -17,6 +17,7 @@ type MemoryUsage struct {
 	FreeMemory              int64   `json:"free_memory"`
 	WastedMemory            int64   `json:"wasted_memory"`
 	CurrentWastedPercentage float64 `json:"current_wasted_percentage"`
+	CurrentUsedPercentage   float64 `json:"current_used_percentage"`
 }
 
 // InternedStringsUsage contains information about OPcache interned strings usage
@@ -30,6 +31,7 @@ type InternedStringsUsage struct {
 // OPcacheStatistics contains information about OPcache statistics
 type OPcacheStatistics struct {
 	NumCachedScripts   int64   `json:"num_cached_scripts"`
+	MaxCachedScripts   int64   `json:"max_cached_scripts"`
 	NumCachedKeys      int64   `json:"num_cached_keys"`
 	MaxCachedKeys      int64   `json:"max_cached_keys"`
 	Hits               int64   `json:"hits"`
