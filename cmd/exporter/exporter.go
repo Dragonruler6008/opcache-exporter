@@ -26,6 +26,7 @@ var (
 	memoryUsageFreeMemoryDesc              = newMetric("memory_usage_free_memory", "OPcache free memory.")
 	memoryUsageWastedMemoryDesc            = newMetric("memory_usage_wasted_memory", "OPcache wasted memory.")
 	memoryUsageCurrentWastedPercentageDesc = newMetric("memory_usage_current_wasted_percentage", "OPcache current wasted percentage.")
+	memoryUsageCurrentUsedPercentageDesc   = newMetric("memory_usage_current_used_percentage", "OPcache current used percentage.")
 
 	internedStringsUsageBufferSizeDesc     = newMetric("interned_strings_usage_buffer_size", "OPcache interned string buffer size.")
 	internedStringsUsageUsedMemoryDesc     = newMetric("interned_strings_usage_used_memory", "OPcache interned string used memory.")
@@ -96,6 +97,7 @@ func (e *Exporter) Describe(ch chan<- *prometheus.Desc) {
 	ch <- memoryUsageFreeMemoryDesc
 	ch <- memoryUsageWastedMemoryDesc
 	ch <- memoryUsageCurrentWastedPercentageDesc
+	ch <- memoryUsageCurrentUsedPercentageDesc
 	ch <- internedStringsUsageBufferSizeDesc
 	ch <- internedStringsUsageUsedMemoryDesc
 	ch <- internedStringsUsageUsedFreeMemory
@@ -135,6 +137,7 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(memoryUsageFreeMemoryDesc, prometheus.GaugeValue, intMetric(status.MemoryUsage.FreeMemory))
 	ch <- prometheus.MustNewConstMetric(memoryUsageWastedMemoryDesc, prometheus.GaugeValue, intMetric(status.MemoryUsage.WastedMemory))
 	ch <- prometheus.MustNewConstMetric(memoryUsageCurrentWastedPercentageDesc, prometheus.GaugeValue, status.MemoryUsage.CurrentWastedPercentage)
+	ch <- prometheus.MustNewConstMetric(memoryUsageCurrentUsedPercentageDesc, prometheus.GaugeValue, status.MemoryUsage.CurrentUsedPercentage)
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageBufferSizeDesc, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.BufferSize))
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageUsedMemoryDesc, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.UsedMemory))
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageUsedFreeMemory, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.FreeMemory))

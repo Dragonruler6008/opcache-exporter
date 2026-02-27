@@ -17,6 +17,7 @@ type MemoryUsage struct {
 	FreeMemory              int64   `json:"free_memory"`
 	WastedMemory            int64   `json:"wasted_memory"`
 	CurrentWastedPercentage float64 `json:"current_wasted_percentage"`
+	CurrentUsedPercentage   float64 `json:"current_used_percentage"`
 }
 
 // InternedStringsUsage contains information about OPcache interned strings usage
