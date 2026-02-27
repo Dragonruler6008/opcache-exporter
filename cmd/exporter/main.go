@@ -1,18 +1,16 @@
 package main
 
 import (
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
 
-	"github.com/go-kit/kit/log/level"
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors/version"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/prometheus/common/promlog"
-	"github.com/prometheus/common/promlog/flag"
-	"github.com/prometheus/common/version"
-	"gopkg.in/alecthomas/kingpin.v2"
+	"github.com/prometheus/common/promslog"
+	"github.com/prometheus/common/promslog/flag"
+	"github.com/alecthomas/kingpin/v2"
 )
 
 func main() {
@@ -24,27 +22,27 @@ func main() {
 		scriptDir     = kingpin.Flag("opcache.script-dir", "Path to directory where temporary PHP file will be created").Default("").String()
 	)
 
-	promlogConfig := &promlog.Config{}
+	promlogConfig := &promslog.Config{}
 	flag.AddFlags(kingpin.CommandLine, promlogConfig)
 	kingpin.HelpFlag.Short('h')
 	kingpin.Parse()
 
-	logger := promlog.New(promlogConfig)
+	logger := promslog.New(promlogConfig)
 
 	if err := run(*listenAddress, *metricsPath, *fcgiURI, *scriptPath, *scriptDir); err != nil {
-		level.Error(logger).Log("msg", "Error starting HTTP server", "err", err)
+		logger.Error("Error starting HTTP server", "err", err)
 		os.Exit(1)
 	}
 }
 
 func run(listenAddress, metricsPath, fcgiURI, scriptPath, scriptDir string) error {
 	if len(scriptPath) == 0 {
-		file, err := ioutil.TempFile(scriptDir, "opcache.*.php")
+		file, err := os.CreateTemp(scriptDir, "opcache.*.php")
 		if err != nil {
 			return err
 		}
 
-		file.Chmod(0777)
+		file.Chmod(0600)
 
 		payload := "<?php\necho(json_encode(opcache_get_status()));\n"
 		_, err = file.WriteString(payload)
