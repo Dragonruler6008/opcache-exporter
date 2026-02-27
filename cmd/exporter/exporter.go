@@ -137,12 +137,19 @@ func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(memoryUsageFreeMemoryDesc, prometheus.GaugeValue, intMetric(status.MemoryUsage.FreeMemory))
 	ch <- prometheus.MustNewConstMetric(memoryUsageWastedMemoryDesc, prometheus.GaugeValue, intMetric(status.MemoryUsage.WastedMemory))
 	ch <- prometheus.MustNewConstMetric(memoryUsageCurrentWastedPercentageDesc, prometheus.GaugeValue, status.MemoryUsage.CurrentWastedPercentage)
-	ch <- prometheus.MustNewConstMetric(memoryUsageCurrentUsedPercentageDesc, prometheus.GaugeValue, status.MemoryUsage.CurrentUsedPercentage)
+
+	totalMemory := float64(status.MemoryUsage.UsedMemory + status.MemoryUsage.FreeMemory + status.MemoryUsage.WastedMemory)
+	var usedPercentage float64
+	if totalMemory > 0 {
+		usedPercentage = (float64(status.MemoryUsage.UsedMemory) / totalMemory) * 100.0
+	}
+	ch <- prometheus.MustNewConstMetric(memoryUsageCurrentUsedPercentageDesc, prometheus.GaugeValue, usedPercentage)
+
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageBufferSizeDesc, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.BufferSize))
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageUsedMemoryDesc, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.UsedMemory))
 	ch <- prometheus.MustNewConstMetric(internedStringsUsageUsedFreeMemory, prometheus.GaugeValue, intMetric(status.InternedStringsUsage.FreeMemory))
 	ch <- prometheus.MustNewConstMetric(statisticsNumCachedScripts, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.NumCachedScripts))
-	ch <- prometheus.MustNewConstMetric(statisticsMaxCachedScripts, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.MaxCachedScripts))
+	ch <- prometheus.MustNewConstMetric(statisticsMaxCachedScripts, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.MaxCachedKeys))
 	ch <- prometheus.MustNewConstMetric(statisticsNumCachedKeys, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.NumCachedKeys))
 	ch <- prometheus.MustNewConstMetric(statisticsMaxCachedKeys, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.MaxCachedKeys))
 	ch <- prometheus.MustNewConstMetric(statisticsHits, prometheus.GaugeValue, intMetric(status.OPcacheStatistics.Hits))
